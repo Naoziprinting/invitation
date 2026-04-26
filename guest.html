@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guest Management</title>
+    <style>
+        :root { --ios-bg: #F2F2F7; --ios-accent: #007AFF; --ios-card: #FFFFFF; }
+        body { font-family: -apple-system, sans-serif; background: var(--ios-bg); padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .guest-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f2f2f7; }
+        .guest-info h3 { margin: 0; font-size: 16px; }
+        .guest-info p { margin: 2px 0 0; font-size: 13px; color: #8e8e93; }
+        .actions { display: flex; gap: 8px; }
+        .btn { padding: 8px 12px; border-radius: 8px; border: none; font-size: 14px; font-weight: 600; cursor: pointer; }
+        .btn-wa { background: #34c759; color: white; }
+        .btn-del { background: #ff3b30; color: white; }
+        .btn-add { background: var(--ios-accent); color: white; width: 100%; margin-top: 10px; }
+        input { width: 100%; padding: 12px; border: 1px solid #d1d1d6; border-radius: 10px; margin-bottom: 10px; box-sizing: border-box; font-size: 16px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Daftar Tamu</h1>
+
+        <div class="card">
+            <label style="font-size: 12px; font-weight: 600;">GAS API URL</label>
+            <input type="text" id="api_url" placeholder="Paste URL Web App GAS" onchange="saveApiUrl()">
+        </div>
+
+        <div id="main-content" style="display:none;">
+            <div class="card">
+                <h3>Tambah Tamu Baru</h3>
+                <input type="text" id="guestName" placeholder="Nama Tamu">
+                <input type="tel" id="guestPhone" placeholder="Nomor WA (62812...)">
+                <button class="btn btn-add" id="addBtn" onclick="addNewGuest()">Tambah ke Daftar</button>
+            </div>
+
+            <div class="card" id="guestList">
+                <p style="text-align: center; color: #8e8e93;">Memuat data...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let GAS_API_URL = localStorage.getItem('gas_api_url') || "https://script.google.com/macros/s/AKfycbxW91ANBf-wFz-GT3yTkJWHK2WlLS5uxtoM-dk_SKbb1AsmypvykMADxWP1vHf8Y4mcsQ/exec";
+        let settings = {};
+
+        if (GAS_API_URL) {
+            document.getElementById('api_url').value = GAS_API_URL;
+            init();
+        }
+
+        function saveApiUrl() {
+            GAS_API_URL = document.getElementById('api_url').value;
+            localStorage.setItem('gas_api_url', GAS_API_URL);
+            init();
+        }
+
+        function init() {
+            if (!GAS_API_URL) return;
+            document.getElementById('main-content').style.display = 'block';
+            fetch(`${GAS_API_URL}?action=getSettings`)
+                .then(res => res.json())
+                .then(data => {
+                    settings = data;
+                    refreshList();
+                });
+        }
+
+        function refreshList() {
+            fetch(`${GAS_API_URL}?action=getGuests`)
+                .then(res => res.json())
+                .then(guests => {
+                    const list = document.getElementById('guestList');
+                    if (guests.length === 0) {
+                        list.innerHTML = '<p style="text-align: center; color: #8e8e93;">Belum ada tamu.</p>';
+                        return;
+                    }
+                    list.innerHTML = '';
+                    guests.forEach(g => {
+                        const div = document.createElement('div');
+                        div.className = 'guest-item';
+                        div.innerHTML = `
+                            <div class="guest-info">
+                                <h3>${g.name}</h3>
+                                <p>${g.phone}</p>
+                            </div>
+                            <div class="actions">
+                                <button class="btn btn-wa" onclick="sendWA('${g.name}', '${g.phone}')">Kirim WA</button>
+                                <button class="btn btn-del" onclick="deleteGuest(${g.id})">Hapus</button>
+                            </div>
+                        `;
+                        list.appendChild(div);
+                    });
+                });
+        }
+
+        function addNewGuest() {
+            const name = document.getElementById('guestName').value;
+            const phone = document.getElementById('guestPhone').value;
+            if (!name || !phone) return alert('Isi nama dan nomor WA!');
+
+            document.getElementById('addBtn').disabled = true;
+            fetch(`${GAS_API_URL}?action=addGuest`, {
+                method: 'POST',
+                body: JSON.stringify({ name: name, phone: phone })
+            })
+            .then(() => {
+                document.getElementById('guestName').value = '';
+                document.getElementById('guestPhone').value = '';
+                document.getElementById('addBtn').disabled = false;
+                refreshList();
+            });
+        }
+
+        function deleteGuest(id) {
+            if (confirm('Hapus tamu ini?')) {
+                fetch(`${GAS_API_URL}?action=deleteGuest`, {
+                    method: 'POST',
+                    body: JSON.stringify({ id: id })
+                }).then(refreshList);
+            }
+        }
+
+        function sendWA(name, phone) {
+            let cleanPhone = phone.replace(/\D/g, '');
+            if (cleanPhone.startsWith('0')) cleanPhone = '62' + cleanPhone.substring(1);
+
+            // Link ke index.html (asumsi berada di domain yang sama)
+            const baseUrl = window.location.href.split('/').slice(0, -1).join('/');
+            const invLink = `${baseUrl}/index.html?to=${encodeURIComponent(name)}`;
+            
+            let message = settings.wa_message.value.replace('[nama]', name);
+            message += `\n\nBuka Undangan: ${invLink}`;
+
+            const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
+            window.open(waUrl, '_blank');
+        }
+    </script>
+</body>
+</html>
