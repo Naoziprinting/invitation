@@ -3,103 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Undangan Digital Elegant</title>
+    <title>Undangan Digital Premium</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;600&family=Sacramento&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
-        :root {
-            --primary: #d4af37; /* Gold */
-            --bg-cream: #fdfbf7;
-            --text-dark: #2d2d2d;
-            --text-light: #8e8e93;
-        }
-
+        :root { --gold: #d4af37; --cream: #fdfbf7; --dark: #2d2d2d; --light: #8e8e93; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--bg-cream);
-            color: var(--text-dark);
-            overflow-x: hidden;
-            scroll-behavior: smooth;
-        }
-
-        h1, h2, h3, .font-serif { font-family: 'Playfair Display', serif; }
-        .font-cursive { font-family: 'Sacramento', cursive; font-size: 3rem; color: var(--primary); }
-
-        /* Floral Ornaments */
-        .floral-corner {
-            position: absolute; width: 150px; z-index: 5; pointer-events: none;
-        }
-        .top-left { top: 0; left: 0; transform: rotate(0deg); }
-        .top-right { top: 0; right: 0; transform: rotate(90deg); }
-        .bottom-left { bottom: 0; left: 0; transform: rotate(-90deg); }
-        .bottom-right { bottom: 0; right: 0; transform: rotate(180deg); }
-
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--cream); color: var(--dark); overflow-x: hidden; scroll-behavior: smooth; }
+        .font-serif { font-family: 'Playfair Display', serif; }
+        .font-cursive { font-family: 'Sacramento', cursive; color: var(--gold); }
+        
+        /* Premium Background */
+        .app-container { max-width: 500px; margin: 0 auto; background: white; box-shadow: 0 0 50px rgba(0,0,0,0.1); position: relative; }
+        
         /* Opening Overlay */
-        #opening-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000;
-            background: #fff; display: flex; flex-direction: column; justify-content: center;
-            align-items: center; text-align: center; transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
-        }
-        .overlay-bg {
-            position: absolute; top:0; left:0; width:100%; height:100%;
-            background-size: cover; background-position: center; opacity: 0.15; z-index: -1;
-        }
-
-        .open-btn {
-            margin-top: 2rem; padding: 0.8rem 2.5rem; background: var(--primary); color: white;
-            border: none; border-radius: 30px; font-weight: 600; cursor: pointer;
-            box-shadow: 0 10px 20px rgba(212,175,55,0.2); transition: 0.3s;
-        }
+        #opening-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000; background: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1); }
+        .open-btn { margin-top: 2rem; padding: 0.8rem 2.5rem; background: var(--gold); color: white; border: none; border-radius: 30px; font-weight: 600; cursor: pointer; box-shadow: 0 10px 20px rgba(212,175,55,0.3); }
 
         /* Sections */
-        section {
-            position: relative; padding: 4rem 1.5rem; text-align: center; overflow: hidden;
-        }
-        .app-container { max-width: 500px; margin: 0 auto; background: white; box-shadow: 0 0 50px rgba(0,0,0,0.05); min-height: 100vh; }
-
-        .hero { height: 80vh; display: flex; flex-direction: column; justify-content: center; background-size: cover; background-position: center; color: white; }
-        .hero::after { content: ''; position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.3); z-index: 1; }
-        .hero-content { position: relative; z-index: 2; }
-
-        .couple-photo { width: 180px; height: 180px; border-radius: 50%; object-fit: cover; border: 5px solid white; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin: 1rem auto; }
+        section { position: relative; padding: 4rem 1.5rem; text-align: center; overflow: hidden; opacity: 0; transform: translateY(30px); transition: 1s ease-out; }
+        section.visible { opacity: 1; transform: translateY(0); }
         
-        .card-event {
-            background: #fff; border: 1px solid #f0f0f0; border-radius: 20px; padding: 2rem;
-            margin-bottom: 1.5rem; box-shadow: 0 15px 35px rgba(0,0,0,0.03); transform: translateY(30px); opacity: 0; transition: 0.8s;
-        }
-        .card-event.visible { transform: translateY(0); opacity: 1; }
+        .hero { height: 100vh; background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: center; color: white; opacity: 1; transform: none; padding: 0; }
+        .hero::after { content: ''; position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.4); z-index: 1; }
+        .hero-content { position: relative; z-index: 2; padding: 20px; }
 
-        .btn-gold {
-            display: inline-block; padding: 0.7rem 1.5rem; background: var(--primary); color: white;
-            text-decoration: none; border-radius: 12px; font-weight: 600; margin-top: 1rem;
-        }
+        .profile-img { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid var(--gold); margin: 15px auto; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        
+        /* Countdown */
+        .countdown-container { display: flex; justify-content: center; gap: 10px; margin: 2rem 0; }
+        .cd-box { background: white; padding: 10px; border-radius: 12px; min-width: 65px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; }
+        .cd-num { font-size: 1.5rem; font-weight: 700; color: var(--gold); display: block; }
+        .cd-label { font-size: 0.7rem; color: var(--light); text-transform: uppercase; }
 
-        .gift-box { background: #f9f6f0; padding: 2rem; border-radius: 20px; margin-top: 2rem; }
-        .bank-info { font-size: 1.2rem; font-weight: 700; color: var(--primary); margin: 0.5rem 0; }
+        /* Event Card */
+        .card-event { background: #fff; border-radius: 20px; padding: 2rem; margin-bottom: 1.5rem; border: 1px solid #f2f2f7; box-shadow: 0 10px 30px rgba(0,0,0,0.02); }
+        .btn-action { display: inline-block; padding: 0.8rem 1.5rem; background: var(--gold); color: white; text-decoration: none; border-radius: 12px; font-weight: 600; margin-top: 1rem; transition: 0.3s; }
+        
+        /* Wishes */
+        .wish-form textarea { width: 100%; padding: 15px; border: 1px solid #d1d1d6; border-radius: 12px; margin: 10px 0; font-family: inherit; }
+        .wish-list { text-align: left; max-height: 400px; overflow-y: auto; margin-top: 20px; padding: 10px; background: #f9f9f9; border-radius: 15px; }
+        .wish-item { background: white; padding: 12px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
+        .wish-name { font-weight: 700; font-size: 0.9rem; color: var(--gold); }
+        .wish-msg { font-size: 0.85rem; margin-top: 4px; }
 
+        /* Audio Control */
         #audio-controls { position: fixed; bottom: 20px; right: 20px; z-index: 100; width: 45px; height: 45px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1); cursor: pointer; }
         
-        .animate-up { opacity: 0; transform: translateY(30px); transition: 1s; }
-        .animate-up.visible { opacity: 1; transform: translateY(0); }
-
-        .divider { width: 80px; height: 2px; background: var(--primary); margin: 1.5rem auto; }
-
         .hidden { display: none !important; }
+        .divider { width: 60px; height: 2px; background: var(--gold); margin: 1rem auto; }
+        .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; }
+        .gallery-grid img { width: 100%; height: 150px; object-fit: cover; border-radius: 10px; }
     </style>
 </head>
 <body>
 
-    <!-- Opening Overlay -->
     <div id="opening-overlay">
-        <img src="https://www.transparentpng.com/download/floral/flower-floral-design-png-images-free-transparent-8.png" class="floral-corner top-left" alt="">
-        <img src="https://www.transparentpng.com/download/floral/flower-floral-design-png-images-free-transparent-8.png" class="floral-corner bottom-right" alt="">
-        <div class="overlay-bg" id="overlay-img"></div>
-        <div style="z-index: 10;">
-            <p class="s-title" style="letter-spacing: 3px; font-size: 0.8rem; margin-bottom: 1rem;">UNDANGAN DIGITAL</p>
-            <h1 id="names-opening" class="font-cursive" style="font-size: 4rem;">...</h1>
-            <p style="margin-top: 2rem;">Kepada Yth. Bapak/Ibu/Saudara/i</p>
-            <h2 id="guest-name" style="margin: 1rem 0; font-size: 1.5rem;">Tamu Undangan</h2>
+        <div class="hero-content">
+            <p style="letter-spacing: 3px;">PENGUMUMAN</p>
+            <h1 id="open-names" class="font-cursive" style="font-size: 3.5rem;">...</h1>
+            <p style="margin-top: 2rem;">Yth. Bapak/Ibu/Saudara/i</p>
+            <h2 id="guest-name" style="margin: 10px 0;">Tamu Undangan</h2>
             <button class="open-btn" onclick="openInvitation()">Buka Undangan</button>
         </div>
     </div>
@@ -110,81 +74,104 @@
             <div class="hero-content">
                 <p class="animate__animated animate__fadeInDown">MOHON DOA RESTU</p>
                 <div class="divider"></div>
-                <h1 id="hero-names" class="font-cursive" style="font-size: 4.5rem; color: white;">...</h1>
-                <p id="hero-date" class="animate__animated animate__fadeInUp"></p>
+                <h1 id="hero-names" class="font-cursive" style="font-size: 4rem; color: white;">...</h1>
+                <p id="hero-date"></p>
             </div>
         </section>
 
-        <!-- Intro -->
-        <section id="sec-intro" class="animate-up">
-            <img src="https://www.transparentpng.com/download/floral/flower-floral-design-png-images-free-transparent-8.png" style="width: 100px; opacity: 0.3;" alt="">
-            <p style="margin-top: 2rem; font-style: italic;">Assalamu’alaikum Warahmatullahi Wabarakatuh</p>
-            <p style="margin: 1.5rem 0; font-size: 0.9rem; line-height: 1.8;">
-                Tanpa mengurangi rasa hormat, kami mengundang Bapak/Ibu/Saudara/i untuk hadir di acara kami:
-            </p>
+        <!-- Countdown -->
+        <section id="sec-countdown">
+            <h2 class="font-serif">Menuju Hari Bahagia</h2>
+            <div class="countdown-container">
+                <div class="cd-box"><span id="days" class="cd-num">00</span><span class="cd-label">Hari</span></div>
+                <div class="cd-box"><span id="hours" class="cd-num">00</span><span class="cd-label">Jam</span></div>
+                <div class="cd-box"><span id="mins" class="cd-num">00</span><span class="cd-label">Menit</span></div>
+                <div class="cd-box"><span id="secs" class="cd-num">00</span><span class="cd-label">Detik</span></div>
+            </div>
         </section>
 
-        <!-- Couple Details -->
-        <section id="sec-couple" class="animate-up">
-            <div id="wedding-couple">
-                <div class="couple-item">
-                    <h2 id="disp-groom-name" class="font-cursive">...</h2>
-                    <p style="font-size: 0.8rem; color: var(--text-light)">Putra dari:</p>
-                    <p id="disp-groom-parents" style="font-weight: 600;"></p>
+        <!-- Couples -->
+        <section id="sec-couples">
+            <div id="wedding-ui">
+                <div class="couple-unit">
+                    <img id="groom-img" src="" class="profile-img">
+                    <h2 id="groom-name" class="font-cursive" style="font-size: 2.5rem;">...</h2>
+                    <p style="font-size: 0.8rem; color: var(--light)">Putra dari:</p>
+                    <p id="groom-parents" style="font-weight: 600;"></p>
                 </div>
-                <div class="font-cursive" style="font-size: 2.5rem; margin: 1rem 0;">&</div>
-                <div class="couple-item">
-                    <h2 id="disp-bride-name" class="font-cursive">...</h2>
-                    <p style="font-size: 0.8rem; color: var(--text-light)">Putri dari:</p>
-                    <p id="disp-bride-parents" style="font-weight: 600;"></p>
+                <div class="font-cursive" style="font-size: 3rem; margin: 2rem 0;">&</div>
+                <div class="couple-unit">
+                    <img id="bride-img" src="" class="profile-img">
+                    <h2 id="bride-name" class="font-cursive" style="font-size: 2.5rem;">...</h2>
+                    <p style="font-size: 0.8rem; color: var(--light)">Putri dari:</p>
+                    <p id="bride-parents" style="font-weight: 600;"></p>
                 </div>
             </div>
-            <div id="khitan-child" class="hidden">
-                <h2 id="disp-khitan-name" class="font-cursive">...</h2>
-                <p style="font-size: 0.8rem; color: var(--text-light)">Putra dari:</p>
-                <p id="disp-khitan-parents" style="font-weight: 600;"></p>
+            <div id="khitan-ui" class="hidden">
+                <img id="khitan-img" src="" class="profile-img">
+                <h2 id="khitan-name" class="font-cursive" style="font-size: 3rem;">...</h2>
+                <p style="font-size: 0.8rem; color: var(--light)">Putra dari:</p>
+                <p id="khitan-parents" style="font-weight: 600;"></p>
             </div>
         </section>
 
         <!-- Events -->
         <section id="sec-events">
-            <h2 style="margin-bottom: 2rem; letter-spacing: 2px;">WAKTU & LOKASI</h2>
+            <h2 class="font-serif" style="letter-spacing: 2px; margin-bottom: 2rem;">WAKTU & LOKASI</h2>
             
             <div class="card-event" id="card-1">
-                <h3 id="event-1-name" style="color: var(--primary); margin-bottom: 1rem;">...</h3>
+                <h3 id="event-1-name" style="color: var(--gold); margin-bottom: 1rem;">...</h3>
                 <p id="event-1-date" style="font-weight: 600;"></p>
-                <p id="event-1-loc" style="font-size: 0.9rem; margin: 0.5rem 0;"></p>
+                <p id="event-1-loc" style="font-size: 0.9rem; margin-top: 5px;"></p>
             </div>
 
             <div class="card-event" id="card-2">
-                <h3 id="event-2-name" style="color: var(--primary); margin-bottom: 1rem;">...</h3>
+                <h3 id="event-2-name" style="color: var(--gold); margin-bottom: 1rem;">...</h3>
                 <p id="event-2-date" style="font-weight: 600;"></p>
-                <p id="event-2-loc" style="font-size: 0.9rem; margin: 0.5rem 0;"></p>
+                <p id="event-2-loc" style="font-size: 0.9rem; margin-top: 5px;"></p>
             </div>
 
-            <div class="card-event animate-up">
-                <h3>Lokasi Acara</h3>
-                <p id="disp-address" style="font-size: 0.85rem; color: var(--text-light); margin: 1rem 0;"></p>
-                <a href="#" id="map-link" class="btn-gold" target="_blank">Buka Google Maps</a>
+            <div class="card-event" id="card-loc">
+                <p id="disp-address" style="font-size: 0.85rem; color: var(--light); line-height: 1.6;"></p>
+                <a href="#" id="map-link" class="btn-action" target="_blank">Petunjuk Lokasi (Google Maps)</a>
             </div>
         </section>
 
-        <!-- Gift Section -->
-        <section id="sec-gift" class="animate-up">
-            <h2 style="letter-spacing: 2px;">DIGITAL GIFT</h2>
+        <!-- Gallery -->
+        <section id="sec-gallery">
+            <h2 class="font-serif">Galeri Foto</h2>
             <div class="divider"></div>
-            <p style="font-size: 0.85rem;">Doa restu Anda merupakan karunia terindah bagi kami. Namun jika ingin memberi tanda kasih, dapat melalui:</p>
-            <div class="gift-box">
-                <p id="gift-bank"></p>
-                <p class="bank-info" id="gift-acc"></p>
-                <p id="gift-name"></p>
-                <button onclick="copyAcc()" style="margin-top: 0.5rem; background: none; border: 1px solid var(--primary); color: var(--primary); padding: 5px 15px; border-radius: 5px; cursor: pointer;">Salin No. Rekening</button>
+            <div class="gallery-grid" id="gallery-container"></div>
+        </section>
+
+        <!-- Gift -->
+        <section id="sec-gift">
+            <h2 class="font-serif">Kado Digital</h2>
+            <div class="divider"></div>
+            <div style="background: #fdfbf7; padding: 2rem; border-radius: 20px;">
+                <p id="gift-bank" style="font-weight: 700;"></p>
+                <p id="gift-acc" style="font-size: 1.5rem; color: var(--gold); font-weight: 700; margin: 10px 0;"></p>
+                <p id="gift-name" style="font-weight: 600;"></p>
+                <button onclick="copyAcc()" class="btn-action" style="background: none; border: 1px solid var(--gold); color: var(--gold);">Salin Rekening</button>
             </div>
         </section>
 
-        <section style="background: #f9f6f0; padding: 3rem 1rem;">
-            <p style="font-size: 0.8rem; color: var(--text-light)">Terima kasih atas doa & restunya.</p>
-            <h2 class="font-cursive" id="footer-names">...</h2>
+        <!-- Wishes -->
+        <section id="sec-wishes">
+            <h2 class="font-serif">Ucapan & Doa</h2>
+            <div class="wish-form">
+                <input type="text" id="wish-name-input" placeholder="Nama Anda" style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd;">
+                <textarea id="wish-msg-input" placeholder="Berikan ucapan terbaik Anda..." rows="3"></textarea>
+                <button onclick="submitWish()" class="btn-action" style="width: 100%;">Kirim Ucapan</button>
+            </div>
+            <div class="wish-list" id="wishes-container">
+                <p style="text-align: center; font-size: 0.8rem; color: #999;">Memuat ucapan...</p>
+            </div>
+        </section>
+
+        <section style="background: #fdfbf7; padding: 4rem 1.5rem;">
+            <p style="font-size: 0.8rem; color: var(--light)">Merupakan kebahagiaan bagi kami atas kehadiran doa & restu Anda.</p>
+            <h1 class="font-cursive" id="footer-names" style="margin-top: 1rem; font-size: 3rem;">...</h1>
         </section>
     </div>
 
@@ -195,7 +182,8 @@
         const GAS_API_URL = "https://script.google.com/macros/s/AKfycbxW91ANBf-wFz-GT3yTkJWHK2WlLS5uxtoM-dk_SKbb1AsmypvykMADxWP1vHf8Y4mcsQ/exec"; 
         let settings = {};
         const urlParams = new URLSearchParams(window.location.search);
-        document.getElementById('guest-name').innerText = urlParams.get('to') || 'Tamu Undangan';
+        const guestName = urlParams.get('to') || 'Tamu Undangan';
+        document.getElementById('guest-name').innerText = guestName;
 
         window.onload = function() {
             fetch(`${GAS_API_URL}?action=getSettings`)
@@ -203,71 +191,100 @@
                 .then(data => {
                     settings = data;
                     renderPage();
+                    loadWishes();
                 });
         };
 
         function renderPage() {
             const isWedding = settings.type.value === 'wedding';
-            const groom = settings.groom_name.value;
-            const bride = settings.bride_name.value;
-            const heroUrl = settings.hero_image.value;
-
-            // Header & Names
-            const mainNames = isWedding ? `${groom.split(' ')[0]} & ${bride.split(' ')[0]}` : settings.khitan_name.value;
-            document.getElementById('names-opening').innerText = mainNames;
-            document.getElementById('hero-names').innerText = mainNames;
-            document.getElementById('footer-names').innerText = mainNames;
+            const mNames = isWedding ? `${settings.groom_name.value.split(' ')[0]} & ${settings.bride_name.value.split(' ')[0]}` : settings.khitan_name.value;
             
-            document.getElementById('hero-sec').style.backgroundImage = `url('${heroUrl}')`;
-            document.getElementById('overlay-img').style.backgroundImage = `url('${heroUrl}')`;
-
-            // Dates
-            const date1 = new Date(settings.event_1_date.value);
-            const dateStr = date1.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-            document.getElementById('hero-date').innerText = dateStr;
-
-            // Wedding vs Khitan UI
-            if (isWedding) {
-                document.getElementById('disp-groom-name').innerText = groom;
-                document.getElementById('disp-groom-parents').innerText = `${settings.groom_father.value} & ${settings.groom_mother.value}`;
-                document.getElementById('disp-bride-name').innerText = bride;
-                document.getElementById('disp-bride-parents').innerText = `${settings.bride_father.value} & ${settings.bride_mother.value}`;
+            document.getElementById('open-names').innerText = mNames;
+            document.getElementById('hero-names').innerText = mNames;
+            document.getElementById('footer-names').innerText = mNames;
+            document.getElementById('hero-sec').style.backgroundImage = `url('${settings.hero_image.value}')`;
+            
+            // Visibility
+            if (!isWedding) {
+                document.getElementById('wedding-ui').classList.add('hidden');
+                document.getElementById('khitan-ui').classList.remove('hidden');
+                document.getElementById('khitan-name').innerText = settings.khitan_name.value;
+                document.getElementById('khitan-parents').innerText = settings.khitan_parents.value;
+                document.getElementById('khitan-img').src = settings.khitan_photo.value;
             } else {
-                document.getElementById('wedding-couple').classList.add('hidden');
-                document.getElementById('khitan-child').classList.remove('hidden');
-                document.getElementById('disp-khitan-name').innerText = settings.khitan_name.value;
-                document.getElementById('disp-khitan-parents').innerText = settings.khitan_parents.value;
+                document.getElementById('groom-name').innerText = settings.groom_name.value;
+                document.getElementById('groom-parents').innerText = `${settings.groom_father.value} & ${settings.groom_mother.value}`;
+                document.getElementById('groom-img').src = settings.groom_photo.value;
+                document.getElementById('bride-name').innerText = settings.bride_name.value;
+                document.getElementById('bride-parents').innerText = `${settings.bride_father.value} & ${settings.bride_mother.value}`;
+                document.getElementById('bride-img').src = settings.bride_photo.value;
             }
 
-            // Events
-            document.getElementById('event_1_name').innerText = settings.event_1_name.value;
-            document.getElementById('event_1_date').innerText = dateStr + ' | ' + date1.getHours().toString().padStart(2,'0') + ':00';
-            document.getElementById('event_1_loc').innerText = settings.event_1_loc.value;
+            // Events - FIXED Mapping
+            const date1 = new Date(settings.event_1_date.value);
+            const date1Str = date1.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+            document.getElementById('hero-date').innerText = date1Str;
+            document.getElementById('event-1-name').innerText = settings.event_1_name.value;
+            document.getElementById('event-1-date').innerText = `${date1Str} | ${date1.getHours().toString().padStart(2,'0')}:${date1.getMinutes().toString().padStart(2,'0')} WIB`;
+            document.getElementById('event-1-loc').innerText = settings.event_1_loc.value;
 
             const date2 = new Date(settings.event_2_date.value);
-            document.getElementById('event_2_name').innerText = settings.event_2_name.value;
-            document.getElementById('event_2_date').innerText = date2.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) + ' | ' + date2.getHours().toString().padStart(2,'0') + ':00';
-            document.getElementById('event_2_loc').innerText = settings.event_2_loc.value;
+            const date2Str = date2.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            document.getElementById('event-2-name').innerText = settings.event_2_name.value;
+            document.getElementById('event-2-date').innerText = `${date2Str} | ${date2.getHours().toString().padStart(2,'0')}:${date2.getMinutes().toString().padStart(2,'0')} WIB`;
+            document.getElementById('event-2-loc').innerText = settings.event_2_loc.value;
 
             document.getElementById('disp-address').innerText = settings.location_address.value;
-            document.getElementById('map-link').href = settings.location_url.value;
+            document.getElementById('map-link').href = settings.location_url.value; // FIXED Map Link
 
-            // Gift
+            // Gift - FIXED Mapping
             document.getElementById('gift-bank').innerText = settings.gift_bank.value;
             document.getElementById('gift-acc').innerText = settings.gift_acc.value;
             document.getElementById('gift-name').innerText = settings.gift_name.value;
 
+            // Gallery
+            const gallery = document.getElementById('gallery-container');
+            ['gallery_1','gallery_2','gallery_3','gallery_4'].forEach(key => {
+                if (settings[key].value) {
+                    const img = document.createElement('img');
+                    img.src = settings[key].value;
+                    gallery.appendChild(img);
+                }
+            });
+
+            // Music
             document.getElementById('bg-music').src = settings.music_url.value;
+            
+            // Checklist Visibility
+            Object.keys(settings).forEach(key => {
+                if (key.endsWith('_v') && !settings[key].visible) {
+                    // Logic to hide sections if needed
+                }
+            });
+
+            startCountdown(settings.event_1_date.value);
+        }
+
+        function startCountdown(date) {
+            const target = new Date(date).getTime();
+            setInterval(() => {
+                const now = new Date().getTime();
+                const diff = target - now;
+                if (diff < 0) return;
+                document.getElementById('days').innerText = Math.floor(diff / (1000 * 60 * 60 * 24)).toString().padStart(2,'0');
+                document.getElementById('hours').innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2,'0');
+                document.getElementById('mins').innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2,'0');
+                document.getElementById('secs').innerText = Math.floor((diff % (1000 * 60)) / 1000).toString().padStart(2,'0');
+            }, 1000);
         }
 
         function openInvitation() {
             document.getElementById('opening-overlay').style.transform = 'translateY(-100%)';
             document.getElementById('bg-music').play();
-            
             const obs = new IntersectionObserver((es) => {
                 es.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
             }, { threshold: 0.1 });
-            document.querySelectorAll('.animate-up, .card-event').forEach(el => obs.observe(el));
+            document.querySelectorAll('section').forEach(s => obs.observe(s));
         }
 
         function toggleAudio() {
@@ -280,6 +297,35 @@
             const acc = document.getElementById('gift-acc').innerText;
             navigator.clipboard.writeText(acc);
             alert("No. Rekening disalin!");
+        }
+
+        function submitWish() {
+            const name = document.getElementById('wish-name-input').value;
+            const msg = document.getElementById('wish-msg-input').value;
+            if (!name || !msg) return alert("Harap isi nama dan ucapan.");
+            
+            fetch(`${GAS_API_URL}?action=sendWish`, {
+                method: 'POST',
+                body: JSON.stringify({ name: name, message: msg })
+            }).then(() => {
+                document.getElementById('wish-msg-input').value = '';
+                loadWishes();
+            });
+        }
+
+        function loadWishes() {
+            fetch(`${GAS_API_URL}?action=getWishes`)
+                .then(res => res.json())
+                .then(wishes => {
+                    const container = document.getElementById('wishes-container');
+                    container.innerHTML = '';
+                    wishes.forEach(w => {
+                        const div = document.createElement('div');
+                        div.className = 'wish-item';
+                        div.innerHTML = `<div class="wish-name">${w.name}</div><div class="wish-msg">${w.message}</div>`;
+                        container.appendChild(div);
+                    });
+                });
         }
     </script>
 </body>
