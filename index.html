@@ -196,13 +196,22 @@
         };
 
         function renderPage() {
+            // Helper untuk mengubah link GitHub biasa ke Raw agar bisa diputar/tampil
+            const toRaw = (url) => {
+                if (!url) return "";
+                if (url.includes("github.com") && url.includes("/blob/")) {
+                    return url.replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/");
+                }
+                return url;
+            };
+
             const isWedding = settings.type.value === 'wedding';
             const mNames = isWedding ? `${settings.groom_name.value.split(' ')[0]} & ${settings.bride_name.value.split(' ')[0]}` : settings.khitan_name.value;
             
             document.getElementById('open-names').innerText = mNames;
             document.getElementById('hero-names').innerText = mNames;
             document.getElementById('footer-names').innerText = mNames;
-            document.getElementById('hero-sec').style.backgroundImage = `url('${settings.hero_image.value}')`;
+            document.getElementById('hero-sec').style.backgroundImage = `url('${toRaw(settings.hero_image.value)}')`;
             
             // Visibility
             if (!isWedding) {
@@ -210,17 +219,17 @@
                 document.getElementById('khitan-ui').classList.remove('hidden');
                 document.getElementById('khitan-name').innerText = settings.khitan_name.value;
                 document.getElementById('khitan-parents').innerText = settings.khitan_parents.value;
-                document.getElementById('khitan-img').src = settings.khitan_photo.value;
+                document.getElementById('khitan-img').src = toRaw(settings.khitan_photo.value);
             } else {
                 document.getElementById('groom-name').innerText = settings.groom_name.value;
                 document.getElementById('groom-parents').innerText = `${settings.groom_father.value} & ${settings.groom_mother.value}`;
-                document.getElementById('groom-img').src = settings.groom_photo.value;
+                document.getElementById('groom-img').src = toRaw(settings.groom_photo.value);
                 document.getElementById('bride-name').innerText = settings.bride_name.value;
                 document.getElementById('bride-parents').innerText = `${settings.bride_father.value} & ${settings.bride_mother.value}`;
-                document.getElementById('bride-img').src = settings.bride_photo.value;
+                document.getElementById('bride-img').src = toRaw(settings.bride_photo.value);
             }
 
-            // Events - FIXED Mapping
+            // Events
             const date1 = new Date(settings.event_1_date.value);
             const date1Str = date1.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
             document.getElementById('hero-date').innerText = date1Str;
@@ -235,33 +244,27 @@
             document.getElementById('event-2-loc').innerText = settings.event_2_loc.value;
 
             document.getElementById('disp-address').innerText = settings.location_address.value;
-            document.getElementById('map-link').href = settings.location_url.value; // FIXED Map Link
+            document.getElementById('map-link').href = settings.location_url.value;
 
-            // Gift - FIXED Mapping
+            // Gift
             document.getElementById('gift-bank').innerText = settings.gift_bank.value;
             document.getElementById('gift-acc').innerText = settings.gift_acc.value;
             document.getElementById('gift-name').innerText = settings.gift_name.value;
 
             // Gallery
             const gallery = document.getElementById('gallery-container');
+            gallery.innerHTML = "";
             ['gallery_1','gallery_2','gallery_3','gallery_4'].forEach(key => {
                 if (settings[key].value) {
                     const img = document.createElement('img');
-                    img.src = settings[key].value;
+                    img.src = toRaw(settings[key].value);
                     gallery.appendChild(img);
                 }
             });
 
             // Music
-            document.getElementById('bg-music').src = settings.music_url.value;
+            document.getElementById('bg-music').src = toRaw(settings.music_url.value);
             
-            // Checklist Visibility
-            Object.keys(settings).forEach(key => {
-                if (key.endsWith('_v') && !settings[key].visible) {
-                    // Logic to hide sections if needed
-                }
-            });
-
             startCountdown(settings.event_1_date.value);
         }
 
