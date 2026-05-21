@@ -17,7 +17,8 @@
         .btn-wa { background: #34c759; color: white; }
         .btn-del { background: #ff3b30; color: white; }
         .btn-add { background: #2d2d2d; color: white; width: 100%; margin-top: 10px; }
-        input { width: 100%; padding: 12px; border: 1px solid #d1d1d6; border-radius: 10px; margin-bottom: 10px; box-sizing: border-box; font-size: 16px; }
+        input, textarea { width: 100%; padding: 12px; border: 1px solid #d1d1d6; border-radius: 10px; margin-bottom: 10px; box-sizing: border-box; font-size: 16px; font-family: inherit; }
+        textarea { resize: vertical; min-height: 100px; }
     </style>
 </head>
 <body>
@@ -30,6 +31,16 @@
             <input type="text" id="guestName" placeholder="Nama Tamu">
             <input type="tel" id="guestPhone" placeholder="Nomor WA (Contoh: 0812...)">
             <button class="btn btn-add" id="addBtn" onclick="addNewGuest()">Tambah ke Daftar</button>
+        </div>
+
+        <!-- Template WhatsApp Card -->
+        <div class="card">
+            <h3>Template Pesan WhatsApp</h3>
+            <p style="font-size: 12.5px; color: #8e8e93; margin-top: -5px; margin-bottom: 12px; line-height: 1.4;">
+                Gunakan kode <code>[nama]</code> untuk memanggil nama tamu secara otomatis dalam pesan.
+            </p>
+            <textarea id="wa_message" rows="5" placeholder="Masukkan format pesan undangan di sini..."></textarea>
+            <button class="btn btn-add" id="saveTemplateBtn" onclick="saveTemplate()" style="margin-top: 5px; background: #007aff;">Simpan Template</button>
         </div>
 
         <div class="card" id="guestList">
@@ -51,12 +62,47 @@
                 .then(res => res.json())
                 .then(data => {
                     settings = data;
+                    if (settings.wa_message && settings.wa_message.value) {
+                        document.getElementById('wa_message').value = settings.wa_message.value;
+                    }
                     refreshList();
                 })
                 .catch(err => {
                     console.error("Gagal memuat pengaturan:", err);
                     alert("Gagal memuat pengaturan. Periksa koneksi atau URL API.");
                 });
+        }
+
+        function saveTemplate() {
+            const btn = document.getElementById('saveTemplateBtn');
+            const val = document.getElementById('wa_message').value;
+            btn.innerText = "Menyimpan...";
+            btn.disabled = true;
+
+            const payload = {
+                wa_message: {
+                    value: val,
+                    visible: true
+                }
+            };
+
+            fetch(`${GAS_API_URL}?action=saveSettings`, {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(() => {
+                alert("Template Pesan Berhasil Disimpan!");
+                if (!settings.wa_message) settings.wa_message = {};
+                settings.wa_message.value = val;
+                btn.innerText = "Simpan Template";
+                btn.disabled = false;
+            })
+            .catch(err => {
+                alert("Gagal menyimpan template: " + err);
+                btn.innerText = "Simpan Template";
+                btn.disabled = false;
+            });
         }
 
         function refreshList() {
@@ -138,8 +184,8 @@
             let message = template.replace('[nama]', name);
             message += `\n\nBuka Undangan: ${invLink}`;
 
-            const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
-            window.open(waUrl, '_blank');
+            const waUrl = `whatsapp://send?phone=${cleanPhone}&text=${encodeURIComponent(message)}`;
+            window.location.href = waUrl;
         }
     </script>
 </body>
