@@ -185,16 +185,30 @@
             <div id="wedding-ui">
                 <div class="couple-box" data-aos="fade-right" data-aos-duration="1000">
                     <img id="groom-img" src="" class="profile-img">
-                    <h2 id="groom-name" class="font-cursive couple-name-style">...</h2>
-                    <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 5px;">Putra dari Bapak <span id="groom-father" style="font-weight: 600; color: var(--text-dark);"></span> & Ibu <span id="groom-mother" style="font-weight: 600; color: var(--text-dark);"></span></p>
+                    <h2 id="groom-nickname" class="font-cursive couple-name-style">...</h2>
+                    <h3 id="groom-fullname" style="font-size: 1.15rem; font-weight: 600; margin: -5px 0 8px; color: var(--text-dark); font-family: 'Playfair Display', serif;">...</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 5px; line-height: 1.5;">
+                        <span id="groom-order">Putra</span> dari Bapak <span id="groom-father" style="font-weight: 600; color: var(--text-dark);"></span> & Ibu <span id="groom-mother" style="font-weight: 600; color: var(--text-dark);"></span>
+                    </p>
+                    <p id="groom-address-container" style="font-size: 0.8rem; color: var(--text-light); margin-top: 10px; font-style: italic; border-top: 1px dashed rgba(0,0,0,0.08); padding-top: 8px; display: none;">
+                        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 384 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg" style="color: var(--primary); margin-right: 4px; vertical-align: middle;"><path d="M172.268 501.67C26.97 291.031 0 269.413 0 192 0 85.961 85.961 0 192 0s192 85.961 192 192c0 77.413-26.97 99.031-172.268 309.67-9.535 13.774-29.93 13.773-39.464 0zM192 272c44.183 0 80-35.817 80-80s-35.817-80-80-80-80 35.817-80 80 35.817 80 80 80z"></path></svg>
+                        Kediaman: <span id="groom-address"></span>
+                    </p>
                 </div>
                 
                 <h1 class="font-cursive" data-aos="zoom-in" style="font-size: 3.5rem; margin: -10px 0 20px;">&</h1>
                 
                 <div class="couple-box" data-aos="fade-left" data-aos-duration="1000">
                     <img id="bride-img" src="" class="profile-img">
-                    <h2 id="bride-name" class="font-cursive couple-name-style">...</h2>
-                    <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 5px;">Putri dari Bapak <span id="bride-father" style="font-weight: 600; color: var(--text-dark);"></span> & Ibu <span id="bride-mother" style="font-weight: 600; color: var(--text-dark);"></span></p>
+                    <h2 id="bride-nickname" class="font-cursive couple-name-style">...</h2>
+                    <h3 id="bride-fullname" style="font-size: 1.15rem; font-weight: 600; margin: -5px 0 8px; color: var(--text-dark); font-family: 'Playfair Display', serif;">...</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 5px; line-height: 1.5;">
+                        <span id="bride-order">Putri</span> dari Bapak <span id="bride-father" style="font-weight: 600; color: var(--text-dark);"></span> & Ibu <span id="bride-mother" style="font-weight: 600; color: var(--text-dark);"></span>
+                    </p>
+                    <p id="bride-address-container" style="font-size: 0.8rem; color: var(--text-light); margin-top: 10px; font-style: italic; border-top: 1px dashed rgba(0,0,0,0.08); padding-top: 8px; display: none;">
+                        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 384 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg" style="color: var(--primary); margin-right: 4px; vertical-align: middle;"><path d="M172.268 501.67C26.97 291.031 0 269.413 0 192 0 85.961 85.961 0 192 0s192 85.961 192 192c0 77.413-26.97 99.031-172.268 309.67-9.535 13.774-29.93 13.773-39.464 0zM192 272c44.183 0 80-35.817 80-80s-35.817-80-80-80-80 35.817-80 80 35.817 80 80 80z"></path></svg>
+                        Kediaman: <span id="bride-address"></span>
+                    </p>
                 </div>
             </div>
 
@@ -356,7 +370,9 @@
             }
 
             const isWedding = settings.type.value === 'wedding';
-            const mNames = isWedding ? `${settings.groom_name.value.split(' ')[0]} & ${settings.bride_name.value.split(' ')[0]}` : settings.khitan_name.value;
+            const groomNickname = (settings.groom_nickname && settings.groom_nickname.value) || (settings.groom_name && settings.groom_name.value ? settings.groom_name.value.split(' ')[0] : 'Groom');
+            const brideNickname = (settings.bride_nickname && settings.bride_nickname.value) || (settings.bride_name && settings.bride_name.value ? settings.bride_name.value.split(' ')[0] : 'Bride');
+            const mNames = isWedding ? `${groomNickname} & ${brideNickname}` : settings.khitan_name.value;
             
             document.getElementById('open-names').innerText = mNames;
             document.getElementById('hero-names').innerText = mNames;
@@ -380,27 +396,58 @@
                 document.getElementById('hero-title').innerText = "Pernikahan";
                 document.getElementById('intro-text').innerText = "Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk hadir pada acara pernikahan kami:";
 
-                document.getElementById('groom-name').innerText = settings.groom_name.value;
+                // Groom
+                const groomNick = (settings.groom_nickname && settings.groom_nickname.value) || (settings.groom_name && settings.groom_name.value ? settings.groom_name.value.split(' ')[0] : '');
+                document.getElementById('groom-nickname').innerText = groomNick;
+                document.getElementById('groom-fullname').innerText = settings.groom_name.value;
                 document.getElementById('groom-father').innerText = settings.groom_father.value;
                 document.getElementById('groom-mother').innerText = settings.groom_mother.value;
                 document.getElementById('groom-img').src = toRaw(settings.groom_photo.value) || 'https://via.placeholder.com/150';
                 
-                document.getElementById('bride-name').innerText = settings.bride_name.value;
+                const groomOrder = (settings.groom_child_number && settings.groom_child_number.value) || "";
+                document.getElementById('groom-order').innerText = groomOrder ? `Putra ${groomOrder}` : "Putra";
+                
+                const groomAddr = (settings.groom_address && settings.groom_address.value) || "";
+                const groomAddrCont = document.getElementById('groom-address-container');
+                if (groomAddr) {
+                    document.getElementById('groom-address').innerText = groomAddr;
+                    groomAddrCont.style.display = 'block';
+                } else {
+                    groomAddrCont.style.display = 'none';
+                }
+                
+                // Bride
+                const brideNick = (settings.bride_nickname && settings.bride_nickname.value) || (settings.bride_name && settings.bride_name.value ? settings.bride_name.value.split(' ')[0] : '');
+                document.getElementById('bride-nickname').innerText = brideNick;
+                document.getElementById('bride-fullname').innerText = settings.bride_name.value;
                 document.getElementById('bride-father').innerText = settings.bride_father.value;
                 document.getElementById('bride-mother').innerText = settings.bride_mother.value;
                 document.getElementById('bride-img').src = toRaw(settings.bride_photo.value) || 'https://via.placeholder.com/150';
+                
+                const brideOrder = (settings.bride_child_number && settings.bride_child_number.value) || "";
+                document.getElementById('bride-order').innerText = brideOrder ? `Putri ${brideOrder}` : "Putri";
+                
+                const brideAddr = (settings.bride_address && settings.bride_address.value) || "";
+                const brideAddrCont = document.getElementById('bride-address-container');
+                if (brideAddr) {
+                    document.getElementById('bride-address').innerText = brideAddr;
+                    brideAddrCont.style.display = 'block';
+                } else {
+                    brideAddrCont.style.display = 'none';
+                }
             }
 
             // Events
             const date1 = new Date(settings.event_1_date.value);
             const date1Str = date1.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-            document.getElementById('hero-date').innerText = date1Str;
             document.getElementById('event-1-name').innerText = settings.event_1_name.value;
             document.getElementById('event-1-date').innerText = `${date1Str} | Pukul ${date1.getHours().toString().padStart(2,'0')}:${date1.getMinutes().toString().padStart(2,'0')} WIB`;
             document.getElementById('event-1-loc').innerText = settings.event_1_loc.value;
 
             const date2 = new Date(settings.event_2_date.value);
             const date2Str = date2.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            const date2FullStr = date2.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+            document.getElementById('hero-date').innerText = date2FullStr;
             document.getElementById('event-2-name').innerText = settings.event_2_name.value;
             document.getElementById('event-2-date').innerText = `${date2Str} | Pukul ${date2.getHours().toString().padStart(2,'0')}:${date2.getMinutes().toString().padStart(2,'0')} WIB`;
             document.getElementById('event-2-loc').innerText = settings.event_2_loc.value;
@@ -448,7 +495,7 @@
                 }
             });
 
-            startCountdown(settings.event_1_date.value);
+             startCountdown(settings.event_2_date.value);
         }
 
         function startCountdown(date) {
